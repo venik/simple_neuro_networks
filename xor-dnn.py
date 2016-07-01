@@ -8,7 +8,7 @@ x = ((1, 0, 0), (1, 0, 1), (1, 1, 0), (1, 1, 1))
 
 # desired vector
 y = (1, 0, 0, 1)
-s
+
 class hyperbolic_tangent(object):
     # Haykin page 145 - "3. Activation function"
     _a =  1.7159
@@ -60,9 +60,9 @@ class neuron(object):
         # assert(inputs.__len__() == self._w.__len__(), "Input and number of inputs do not match")
         self._v = self._w.dot(inputs)
 
-        print("calculate_local_field: local field: " + str(self._v))
+        # print("calculate_local_field: local field: " + str(self._v))
         self._y = self._activation_function.get_phi(self._v)
-        print("calculate_local_field: output: " + str(self._y))
+        # print("calculate_local_field: output: " + str(self._y))
 
     def get_local_field(self):
         return self._v
@@ -70,12 +70,15 @@ class neuron(object):
     def get_output(self):
         return self._y
 
+    def __str__(self):
+        return "Weights (w): %s\nLocal field(v): %s\nOutput(o): %s" % (str(self._w), str(self._v), str(self._y))
+
 # class insideLayer(layer):
 #     def init(self, number_of_neurons, number_of_neurons_next_layer):
 
 n = neuron(3)
 n.calculate_local_field( np.array((1, 2, 3)).reshape(3, 1) )
-
+print(str(n))
 # # first layer x -> w1
 # w1_x = np.array(([1], [1], [1]))
 # w2_x = np.array(([1], [1], [1]))
