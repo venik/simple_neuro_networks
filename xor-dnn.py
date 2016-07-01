@@ -9,11 +9,31 @@ x = ((1, 0, 0), (1, 0, 1), (1, 1, 0), (1, 1, 1))
 # desired vector
 y = (1, 0, 0, 1)
 
-class hyperbolic_tangent(object):
+class ActivationFunction(object):
+    _threshold = 0
+
+    def __init__(self, threshold):
+        self._threshold = threshold
+
+    def get_threshold(self):
+        return self._threshold
+
+    @abstractmethod
+    def get_phi(self, number_of_neurons, number_of_neurons_next_layer):
+        raise NotImplementedError, "ActivationFunction class, get_phi() has to be implemented"
+
+    @abstractmethod
+    def get_phi_derivative(self, local_field):
+        raise NotImplementedError, "ActivationFunction class, get_phi_derivative() has to be implemented"
+
+class HyperbolicTangent(ActivationFunction):
     # Haykin page 145 - "3. Activation function"
     _a =  1.7159
     _b = 0.6666
     _ab = _a / _b
+
+    def __init__(self, threshold):
+        super(HyperbolicTangent, self).__init__(threshold)
 
     # Haykin page 136 - "2. Hyperbolic tangent function"
     def get_phi(self, local_field):
@@ -22,20 +42,20 @@ class hyperbolic_tangent(object):
     def get_phi_derivative(self, local_field):
         return self._ab * (self._a - local_field) * (self._a + local_field)
 
-class layer(object):
+class NeuronLayer(object):
     @abstractmethod
     def init(self, number_of_neurons, number_of_neurons_next_layer):
-        pass
+        raise NotImplementedError, "NeuronLayer class, init() has to be implemented"
 
     @abstractmethod
     def forward(self, input):
-        pass
+        raise NotImplementedError, "NeuronLayer class, forward() has to be implemented"
 
     @abstractmethod
     def backward(self):
-        pass
+        raise NotImplementedError, "NeuronLayer class, backward() has to be implemented"
 
-class neuron(object):
+class Neuron(object):
     _v = None
     _y = None
     # row vector of weights
@@ -44,10 +64,10 @@ class neuron(object):
     # Haykin "Activation function" page 135
     _activation_function = None
 
-    def __init__(self, num_of_inputs, activation_function = hyperbolic_tangent):
+    def __init__(self, num_of_inputs, activation_function = HyperbolicTangent):
         self._v = 0.0
         self._y = 0.0
-        self._activation_function = activation_function()
+        self._activation_function = activation_function(threshold = 0.0)
 
         # Haykin, initial weights page 148
         w = [None] * num_of_inputs
@@ -60,9 +80,7 @@ class neuron(object):
         # assert(inputs.__len__() == self._w.__len__(), "Input and number of inputs do not match")
         self._v = self._w.dot(inputs)
 
-        # print("calculate_local_field: local field: " + str(self._v))
         self._y = self._activation_function.get_phi(self._v)
-        # print("calculate_local_field: output: " + str(self._y))
 
     def get_local_field(self):
         return self._v
@@ -73,12 +91,27 @@ class neuron(object):
     def __str__(self):
         return "Weights (w): %s\nLocal field(v): %s\nOutput(o): %s" % (str(self._w), str(self._v), str(self._y))
 
-# class insideLayer(layer):
-#     def init(self, number_of_neurons, number_of_neurons_next_layer):
+class OutputLayer(NeuronLayer):
+    pass
 
-n = neuron(3)
+class HiddenLayer(NeuronLayer):
+    _layer = [None]
+    _isOutput = False
+
+    def __init__(self, number_of_neurons, number_of_inputs, number_of_neurons_next_layer, isOutput = False):
+        self._layer = [Neuron] * number_of_neurons
+        self._isOutput = isOutput
+
+        for i in range(number_of_neurons):
+            self._layer[i] = Neuron(number_of_inputs)
+
+
+n = Neuron(3)
 n.calculate_local_field( np.array((1, 2, 3)).reshape(3, 1) )
 print(str(n))
+
+HiddenLayer(number_of_neurons = 3, number_of_inputs = 2, number_of_neurons_next_layer = 1)
+
 # # first layer x -> w1
 # w1_x = np.array(([1], [1], [1]))
 # w2_x = np.array(([1], [1], [1]))
