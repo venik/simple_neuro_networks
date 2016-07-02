@@ -77,7 +77,7 @@ class Neuron(object):
 
 class NeuronLayer(object):
     _layer = [None]
-    _layer_output = [None]
+    _layer_output = None
     _layer_output_len = 0
 
     _delta = None                   # local gradient
@@ -87,8 +87,8 @@ class NeuronLayer(object):
     # number_of_neurons - number of neurons in the current layer
     # number_of_inputs - number of th input connection, for every connection we have it's own weight (w)
     def __init__(self, number_of_neurons, number_of_inputs):
-        self._layer_output = [None] * number_of_neurons
         self._layer_output_len = number_of_neurons
+        self._layer_output = np.zeros((self._layer_output_len, 1))
 
         self._layer = [None] * number_of_neurons
         for i in range(number_of_neurons):
@@ -103,7 +103,7 @@ class NeuronLayer(object):
             self._layer_output[i] = self._layer[i].get_output()
 
     def get_layer_output(self):
-        return np.array((self._layer_output)).reshape(self._layer_output_len, 1)
+        return self._layer_output
 
     def __str__(self):
         str =  "\n"
@@ -122,16 +122,19 @@ class OutputLayer(NeuronLayer):
     _e = None        # output error
     _d = None        # desired output
 
+    def __init__(self, number_of_neurons, number_of_inputs):
+        super(OutputLayer, self).__init__(number_of_neurons, number_of_inputs)
+
     def backward(self, desired_output):
         super(OutputLayer, self).backward()
 
         self._d = desired_output
         self._e = self._d - self.get_layer_output()
-        print("OutputLayer: " + str(self._e))
+        print("OutputLayer error: " + str(self._e))
 
         # Haykin "Backward computation" page 141
         self._delta = np.multiply(self._e, np.array((self._phi_derivative_array)).reshape(self._layer_output_len, 1) )
-        print("_delta: " + str(self._delta))
+        print("OutputLayer _delta: " + str(self._delta))
 
         # update weights
         # Haykin "Backward computation" page 141
@@ -144,10 +147,27 @@ class OutputLayer(NeuronLayer):
 
 class HiddenLayer(NeuronLayer):
 
+    def __init__(self, number_of_neurons, number_of_inputs):
+        super(HiddenLayer, self).__init__(number_of_neurons, number_of_inputs)
+
     def backward(self, previous_layer):
         super(HiddenLayer, self).backward()
 
-        pass
+        delta_array = [None] * self._layer_output_len
+        for i in range(self._layer_output_len):
+            delta_array[i] = previous_layer._layer[i]._w.dot(previous_layer._delta)
+
+        self._delta = np.array((delta_array)).reshape(self._layer_output_len, 1)
+        print("HiddenLayer _delta: " + str(self._delta))
+
+        # update weights
+        # Haykin "Backward computation" page 141
+        # for i in range(self._layer_output_len):
+        #     print("_w: " + str(self._layer[i]._w))
+        #     self._layer[i]._w = self._layer[i]._w + \
+        #                         self._learning_rate * self._delta.reshape(1, self._layer_output_len) * self._layer[i].get_output()
+        #     print("_w + 1: " + str(self._layer[i]._w))
+
 
 input_vector = np.array((1, 2)).reshape(2, 1)
 
@@ -159,8 +179,8 @@ nl_2 = OutputLayer(number_of_neurons = 2, number_of_inputs = 2)
 nl_2.forward(input_layer = nl_1.get_layer_output())
 print("Neural layer 2:" + str(nl_2))
 
-# desired = np.array((1.53245969, 1.53245969)).reshape(2, 1)
-desired = np.array((1, 1.53245969)).reshape(2, 1)
+# desired = np.array((1, 2)).reshape(2, 1)
+desired = np.array((1.53245969, 1.53245969)).reshape(2, 1)
 
 nl_2.backward(desired)
-nl_1.backward(previous_layer = nl_2)
+# nl_1.backward(previous_layer = nl_2)
