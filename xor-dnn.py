@@ -3,12 +3,6 @@ from abc import abstractmethod
 
 import numpy as np
 
-# input vector
-x = ((1, 0, 0), (1, 0, 1), (1, 1, 0), (1, 1, 1))
-
-# desired vector
-y = (1, 0, 0, 1)
-
 class ActivationFunction(object):
     _threshold = 0
 
@@ -42,24 +36,10 @@ class HyperbolicTangent(ActivationFunction):
     def get_phi_derivative(self, local_field):
         return self._ab * (self._a - local_field) * (self._a + local_field)
 
-class NeuronLayer(object):
-    @abstractmethod
-    def init(self, number_of_neurons, number_of_neurons_next_layer):
-        raise NotImplementedError, "NeuronLayer class, init() has to be implemented"
-
-    @abstractmethod
-    def forward(self, input):
-        raise NotImplementedError, "NeuronLayer class, forward() has to be implemented"
-
-    @abstractmethod
-    def backward(self):
-        raise NotImplementedError, "NeuronLayer class, backward() has to be implemented"
-
 class Neuron(object):
-    _v = None
-    _y = None
-    # row vector of weights
-    _w = None
+    _v = None       # local field
+    _y = None       # output
+    _w = None       # row vector of weights
 
     # Haykin "Activation function" page 135
     _activation_function = None
@@ -91,19 +71,38 @@ class Neuron(object):
     def __str__(self):
         return "Weights (w): %s\nLocal field(v): %s\nOutput(o): %s" % (str(self._w), str(self._v), str(self._y))
 
+class NeuronLayer(object):
+    _layer = [None]
+    _output = [None]
+
+    def init(self, number_of_neurons, number_of_inputs):
+        for i in range(number_of_neurons):
+            self._layer[i] = Neuron(number_of_inputs)
+
+        self._output = [Neuron] * number_of_neurons
+
+    def get_output(self):
+        return self._output
+
+    def forward(self, input_layer):
+        for neuron in self._layer:
+            neuron.calculate_local_field(input_layer)
+
+    @abstractmethod
+    def backward(self):
+        raise NotImplementedError, "NeuronLayer class, backward() has to be implemented"
+
+class InputLayer(NeuronLayer):
+    pass
+
 class OutputLayer(NeuronLayer):
     pass
 
 class HiddenLayer(NeuronLayer):
-    _layer = [None]
     _isOutput = False
 
     def __init__(self, number_of_neurons, number_of_inputs, number_of_neurons_next_layer, isOutput = False):
-        self._layer = [Neuron] * number_of_neurons
         self._isOutput = isOutput
-
-        for i in range(number_of_neurons):
-            self._layer[i] = Neuron(number_of_inputs)
 
 
 n = Neuron(3)
@@ -111,6 +110,12 @@ n.calculate_local_field( np.array((1, 2, 3)).reshape(3, 1) )
 print(str(n))
 
 HiddenLayer(number_of_neurons = 3, number_of_inputs = 2, number_of_neurons_next_layer = 1)
+
+# # input vector
+# x = ((1, 0, 0), (1, 0, 1), (1, 1, 0), (1, 1, 1))
+#
+# # desired vector
+# y = (1, 0, 0, 1)
 
 # # first layer x -> w1
 # w1_x = np.array(([1], [1], [1]))
