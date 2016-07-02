@@ -69,6 +69,9 @@ class Neuron(object):
     def get_output(self):
         return self._y
 
+    def get_phi_derivative(self):
+        return self._activation_function.get_phi_derivative(self._v)
+
     def __str__(self):
         return "Weights (w): %s\nLocal field(v): %s\nOutput(o): %s" % (str(self._w), str(self._v), str(self._y))
 
@@ -76,6 +79,8 @@ class NeuronLayer(object):
     _layer = [None]
     _layer_output = [None]
     _layer_output_len = 0
+
+    _delta = None    # local gradient
 
     # number_of_neurons - number of neurons in the current layer
     # number_of_inputs - number of th input connection, for every connection we have it's own weight (w)
@@ -104,11 +109,33 @@ class NeuronLayer(object):
 
     @abstractmethod
     def backward(self):
-        raise NotImplementedError, "NeuronLayer class, backward() has to be implemented"
+        raise NotImplementedError, "NeuronLayer class, backward() has to be specific to layer type (output/hidden)"
 
 class OutputLayer(NeuronLayer):
+    _e = None        # output error
+    _d = None        # desired output
+
+    _phi_derivative_array = None    # Storage for of phi derivatives for the back propagation process
+
+    def __init__(self, number_of_neurons, number_of_inputs):
+        super(OutputLayer, self).__init__(number_of_neurons, number_of_inputs)
+
+        self._phi_derivative_array = [None] * self._layer_output_len
+
     def backward(self, desired_output):
-        pass
+        self._d = desired_output
+        self._e = self._d - self.get_layer_output()
+        print("OutputLayer: " + str(self._e))
+
+        for i in range(self._layer_output_len):
+            self._phi_derivative_array[i] = self._layer[i].get_phi_derivative()
+
+        print("phi_array: " + str(self._phi_derivative_array))
+
+        self._delta = np.multiply(self._e, np.array((self._phi_derivative_array)).reshape(2, 1) )
+
+        print("_delta: " + str(self._delta))
+
 
 class HiddenLayer(NeuronLayer):
     def backward(self, local_gradient):
@@ -124,3 +151,6 @@ print("Neural layer 1:" + str(nl_1))
 nl_2 = OutputLayer(number_of_neurons = 2, number_of_inputs = 2)
 nl_2.forward(nl_1.get_layer_output())
 print("Neural layer 2:" + str(nl_2))
+
+desired = np.array((1, 2)).reshape(2, 1)
+nl_2.backward(desired)
