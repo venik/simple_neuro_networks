@@ -56,6 +56,7 @@ class Neuron(object):
 
         self._w = np.array((w)).reshape((1, num_of_inputs))
 
+    # inputs is numpy.array column vector
     def calculate_local_field(self, inputs):
         # assert(inputs.__len__() == self._w.__len__(), "Input and number of inputs do not match")
         self._v = self._w.dot(inputs)
@@ -73,30 +74,32 @@ class Neuron(object):
 
 class NeuronLayer(object):
     _layer = [None]
-    _output = [None]
 
-    def init(self, number_of_neurons, number_of_inputs):
+    # number_of_neurons - number of neurons in the current layer
+    # number_of_inputs - number of th input connection, for every connection we have it's own weight (w)
+    def __init__(self, number_of_neurons, number_of_inputs):
+        self._layer = [None] * number_of_neurons
         for i in range(number_of_neurons):
             self._layer[i] = Neuron(number_of_inputs)
-
-        self._output = [Neuron] * number_of_neurons
-
-    def get_output(self):
-        return self._output
 
     def forward(self, input_layer):
         for neuron in self._layer:
             neuron.calculate_local_field(input_layer)
 
+    def __str__(self):
+        str =  "\n"
+        for neuron in self._layer:
+            str = str + neuron.__str__() + "\n"
+
+        return str
+
     @abstractmethod
     def backward(self):
         raise NotImplementedError, "NeuronLayer class, backward() has to be implemented"
 
-class InputLayer(NeuronLayer):
-    pass
-
 class OutputLayer(NeuronLayer):
-    pass
+    def __init__(self):
+        raise NotImplementedError, "OutputLayer class, not implemeted"
 
 class HiddenLayer(NeuronLayer):
     _isOutput = False
@@ -105,11 +108,14 @@ class HiddenLayer(NeuronLayer):
         self._isOutput = isOutput
 
 
-n = Neuron(3)
-n.calculate_local_field( np.array((1, 2, 3)).reshape(3, 1) )
-print(str(n))
+input_vector = np.array((1, 2, 3)).reshape(3, 1)
 
-HiddenLayer(number_of_neurons = 3, number_of_inputs = 2, number_of_neurons_next_layer = 1)
+nl = NeuronLayer(number_of_neurons = 2, number_of_inputs = 3)
+nl.forward(input_vector)
+print("Neural layer + " + str(nl))
+
+
+# HiddenLayer(number_of_neurons = 3, number_of_inputs = 2, number_of_neurons_next_layer = 1)
 
 # # input vector
 # x = ((1, 0, 0), (1, 0, 1), (1, 1, 0), (1, 1, 1))
