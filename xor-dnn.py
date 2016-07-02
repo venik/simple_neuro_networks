@@ -74,17 +74,26 @@ class Neuron(object):
 
 class NeuronLayer(object):
     _layer = [None]
+    _layer_output = [None]
+    _layer_output_len = 0
 
     # number_of_neurons - number of neurons in the current layer
     # number_of_inputs - number of th input connection, for every connection we have it's own weight (w)
     def __init__(self, number_of_neurons, number_of_inputs):
+        self._layer_output = [None] * number_of_neurons
+        self._layer_output_len = number_of_neurons
+
         self._layer = [None] * number_of_neurons
         for i in range(number_of_neurons):
             self._layer[i] = Neuron(number_of_inputs)
 
     def forward(self, input_layer):
-        for neuron in self._layer:
-            neuron.calculate_local_field(input_layer)
+        for i in range(self._layer.__len__()):
+            self._layer[i].calculate_local_field(input_layer)
+            self._layer_output[i] = self._layer[i].get_output()
+
+    def get_layer_output(self):
+        return np.array((self._layer_output)).reshape(self._layer_output_len, 1)
 
     def __str__(self):
         str =  "\n"
@@ -108,12 +117,18 @@ class HiddenLayer(NeuronLayer):
         self._isOutput = isOutput
 
 
-input_vector = np.array((1, 2, 3)).reshape(3, 1)
+input_vector = np.array((1, 2)).reshape(2, 1)
 
-nl = NeuronLayer(number_of_neurons = 2, number_of_inputs = 3)
-nl.forward(input_vector)
-print("Neural layer + " + str(nl))
+nl_1 = NeuronLayer(number_of_neurons = 2, number_of_inputs = 2)
+nl_1.forward(input_vector)
+print("Neural layer 1:" + str(nl_1))
 
+nl_2 = NeuronLayer(number_of_neurons = 2, number_of_inputs = 2)
+nl_2.forward(nl_1.get_layer_output())
+print("Neural layer 2:" + str(nl_2))
+
+
+# print( "output:\n" + str(nl.get_layer_output()) )
 
 # HiddenLayer(number_of_neurons = 3, number_of_inputs = 2, number_of_neurons_next_layer = 1)
 
