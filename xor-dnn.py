@@ -37,29 +37,30 @@ class HyperbolicTangent(ActivationFunction):
         return self._ab * (self._a - local_field) * (self._a + local_field)
 
 class Neuron(object):
-    _v = None       # local field
-    _y = None       # output
+    _v = 0.0       # local field
+    _y = 0.0       # output
     _w = None       # row vector of weights
+    _num_of_inputs = 0  # num of the inputs
+    _zero_input = np.array(([1]))
+    _inputs = None
 
     # Haykin "Activation function" page 135
     _activation_function = None
 
     def __init__(self, num_of_inputs, activation_function = HyperbolicTangent):
-        self._v = 0.0
-        self._y = 0.0
+        self._num_of_inputs = num_of_inputs + 1
         self._activation_function = activation_function(threshold = 0.0)
 
-        # Haykin, initial weights page 148
-        w = [None] * num_of_inputs
-        for i in range(w.__len__()):
-            w[i] = 1 / np.sqrt(num_of_inputs)
+        # Haykin, initial weights page 148, default weight could be 1/sqrt(num_of_inputs)
+        self._w = np.ones((1, self._num_of_inputs)) / np.sqrt(self._num_of_inputs)
 
-        self._w = np.array((w)).reshape((1, num_of_inputs))
+        self._inputs = np.zeros((self._num_of_inputs, 1))
 
     # inputs is numpy.array column vector
     def calculate_local_field(self, inputs):
         # assert(inputs.__len__() == self._w.__len__(), "Input and number of inputs do not match")
-        self._v = self._w.dot(inputs)
+        self._inputs = np.append(self._zero_input, inputs)
+        self._v = self._w.dot(self._inputs)
 
         self._y = self._activation_function.get_phi(self._v)
 
@@ -73,7 +74,8 @@ class Neuron(object):
         return self._activation_function.get_phi_derivative(self._v)
 
     def __str__(self):
-        return "Weights (w): %s\nLocal field(v): %s\nOutput(o): %s" % (str(self._w), str(self._v), str(self._y))
+        return "Weights (w): %s\nInputs: %s\nLocal field(v): %s\nOutput(o): %s" %\
+               (str(self._w), str(self._inputs), str(self._v), str(self._y))
 
 class NeuronLayer(object):
     _layer = [None]
@@ -169,18 +171,23 @@ class HiddenLayer(NeuronLayer):
         #     print("_w + 1: " + str(self._layer[i]._w))
 
 
-input_vector = np.array((1, 2)).reshape(2, 1)
+input_vector = np.array((2, 3)).reshape(2, 1)
 
-nl_1 = HiddenLayer(number_of_neurons = 2, number_of_inputs = 2)
-nl_1.forward(input_vector)
-print("Neural layer 1:" + str(nl_1))
+# neuron test
+n = Neuron(2)
+n.calculate_local_field(input_vector)
+print("neuron:\n" + str(n))
 
-nl_2 = OutputLayer(number_of_neurons = 2, number_of_inputs = 2)
-nl_2.forward(input_layer = nl_1.get_layer_output())
-print("Neural layer 2:" + str(nl_2))
-
-# desired = np.array((1, 2)).reshape(2, 1)
-desired = np.array((1.53245969, 1.53245969)).reshape(2, 1)
-
-nl_2.backward(desired)
+# nl_1 = HiddenLayer(number_of_neurons = 2, number_of_inputs = 2)
+# nl_1.forward(input_vector)
+# print("Neural layer 1:" + str(nl_1))
+#
+# nl_2 = OutputLayer(number_of_neurons = 2, number_of_inputs = 2)
+# nl_2.forward(input_layer = nl_1.get_layer_output())
+# print("Neural layer 2:" + str(nl_2))
+#
+# # desired = np.array((1, 2)).reshape(2, 1)
+# desired = np.array((1.53245969, 1.53245969)).reshape(2, 1)
+#
+# nl_2.backward(desired)
 # nl_1.backward(previous_layer = nl_2)
