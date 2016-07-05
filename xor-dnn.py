@@ -33,8 +33,8 @@ class HyperbolicTangent(ActivationFunction):
     def get_phi(self, local_field):
         return self._a * np.tanh(self._b * local_field)
 
-    def get_phi_derivative(self, local_field):
-        return self._ab * (self._a - local_field) * (self._a + local_field)
+    def get_phi_derivative(self, output_signal):
+        return self._ab * (self._a - output_signal) * (self._a + output_signal)
 
 class Neuron(object):
     _v = 0.0       # local field
@@ -54,11 +54,13 @@ class Neuron(object):
         # Haykin, initial weights page 148, default weight could be 1/sqrt(num_of_inputs)
         self._w = np.ones((1, self._num_of_inputs)) / np.sqrt(self._num_of_inputs)
 
+        # allocate input vector
         self._inputs = np.zeros((self._num_of_inputs, 1))
 
     # inputs is numpy.array column vector
     def calculate_local_field(self, inputs):
         # assert(inputs.__len__() == self._w.__len__(), "Input and number of inputs do not match")
+        # add zero input => [1, inputs]
         self._inputs = np.append(self._zero_input, inputs)
         self._v = self._w.dot(self._inputs)
 
@@ -71,7 +73,7 @@ class Neuron(object):
         return self._y
 
     def get_phi_derivative(self):
-        return self._activation_function.get_phi_derivative(self._v)
+        return self._activation_function.get_phi_derivative(output_signal = self._y)
 
     def __str__(self):
         return "Weights (w): %s\nInputs: %s\nLocal field(v): %s\nOutput(o): %s" %\
@@ -120,7 +122,7 @@ class NeuronLayer(object):
         for i in range(self._layer_output_len):
             self._phi_derivative_array[i] = self._layer[i].get_phi_derivative()
 
-        print("phi_array: " + str(self._phi_derivative_array))
+        # print("phi_array: " + str(self._phi_derivative_array))
 
 class OutputLayer(NeuronLayer):
     _e = 0.0        # output error
@@ -145,12 +147,16 @@ class OutputLayer(NeuronLayer):
 
         # # update weights
         # # Haykin "Backward computation" page 141
-        # for i in range(self._layer_output_len):
-        for i in range(1):
-            print("_w: " + str(self._layer[i]._w))
-            self._layer[i]._w = self._layer[i]._w + \
-                                self._learning_rate * self._delta.reshape(1, self._layer_output_len) * self._layer[i].get_output()
-            print("_w + 1: " + str(self._layer[i]._w))
+        for i in range(self._layer_output_len):
+            print("delta %s val: %s" % (i, str(self._delta[i])) )
+            neuron = self._layer[i]
+            delta = self._delta[i]
+
+            for k in range(neuron._num_of_inputs):
+                input = neuron._inputs[k]
+                # print("\t w%s:%s input:%s" % (k, str(neuron._w[0, k]), str(input)) )
+                neuron._w[0, k] = neuron._w[0, k] + self._learning_rate * self._delta[i] * neuron._inputs[k]
+                # print("\t w%s:%s input:%s" % (k, str(neuron._w[0, k]), str(input)) )
 
 class HiddenLayer(NeuronLayer):
 
@@ -192,7 +198,7 @@ input_vector = np.array((2, 3)).reshape(2, 1)
 
 nl_1 = InputLayer(number_of_neurons = 2, number_of_inputs = 2)
 nl_1.forward(input_vector)
-print("Neural layer 1:" + str(nl_1))
+# print("Neural layer 1:" + str(nl_1))
 
 nl_2 = OutputLayer(number_of_neurons = 2, number_of_inputs = 2, previous_layer = nl_1)
 nl_2.forward()
