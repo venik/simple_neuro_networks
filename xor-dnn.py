@@ -40,6 +40,8 @@ class Neuron(object):
     _v = 0.0       # local field
     _y = 0.0       # output
     _w = None       # row vector of weights
+    _w_minus_one = None
+    _w_minus_two = None
     _num_of_inputs = 0  # num of the inputs
     _zero_input = np.array(([1]))
     _inputs = None
@@ -53,6 +55,9 @@ class Neuron(object):
 
         # Haykin, initial weights page 148, default weight could be 1/sqrt(num_of_inputs)
         self._w = np.ones((1, self._num_of_inputs)) / np.sqrt(self._num_of_inputs)
+
+        self._w_minus_one = np.zeros((1, self._num_of_inputs))
+        self._w_minus_two = np.zeros((1, self._num_of_inputs))
 
         # allocate input vector
         self._inputs = np.zeros((self._num_of_inputs, 1))
@@ -153,8 +158,11 @@ class OutputLayer(NeuronLayer):
         for i in range(self._layer_output_len):
             # print("delta %s val: %s" % (i, str(self._delta[i])) )
             neuron = self._layer[i]
+            neuron._w_minus_one = np.copy(neuron._w)
             for k in range(1, neuron._num_of_inputs):
-                print("\t w%s:%s input:%s" % (k, str(neuron._w[0, k]), str(neuron._inputs[k])) )
+                neuron._w[0, k] = neuron._w_minus_one[0, k] + self._learning_rate * self._delta[i] * neuron._inputs[k]
+                print("\t w(n)%s:%s input:%s" % (k, str(neuron._w_minus_one[0, k]), str(neuron._inputs[k])) )
+                print("\t w(n+1)%s:%s" % (k, str(neuron._w[0, k])) )
 
 # class HiddenLayer(NeuronLayer):
 #
@@ -197,8 +205,8 @@ class InputLayer(NeuronLayer):
             for k in range(layer_minus_one.get_neurons_number()):
                 neuron_l_minus_one = layer_minus_one._layer[k]
                 for k in range(neuron_l_minus_one._num_of_inputs):
-
-                print("InputLayer w%s:%s delta:%s" % (k, str(neuron._w[0, k]), layer_minus_one._delta[k]) )
+                    pass
+                    # print("InputLayer w%s:%s delta:%s" % (k, str(neuron._w[0, k]), layer_minus_one._delta[k]) )
 
 input_vector = np.array((2, 3)).reshape(2, 1)
 
@@ -215,8 +223,8 @@ nl_2 = OutputLayer(number_of_neurons = 2, number_of_inputs = 2, previous_layer =
 nl_2.forward()
 print("Neural layer 2:" + str(nl_2))
 
-# desired = np.array((1, 2)).reshape(2, 1)
-desired = np.array((1.60065595, 1.60065595)).reshape(2, 1)
+desired = np.array((1, 2)).reshape(2, 1)
+# desired = np.array((1.60065595, 1.60065595)).reshape(2, 1)
 
 nl_2.backward(desired)
 nl_1.backward(layer_minus_one = nl_2)
