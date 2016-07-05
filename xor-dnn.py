@@ -198,15 +198,20 @@ class InputLayer(NeuronLayer):
     def backward(self, layer_minus_one):
         super(InputLayer, self).backward()
 
+        self._delta = np.zeros((self._layer_output_len, 1))
+
         # # update weights
         # # Haykin "Backward computation" page 141
         for i in range(self.get_neurons_number()):
             # neuron_l = self._layer[i]
             for k in range(layer_minus_one.get_neurons_number()):
                 neuron_l_minus_one = layer_minus_one._layer[k]
-                for k in range(neuron_l_minus_one._num_of_inputs):
-                    pass
-                    # print("InputLayer w%s:%s delta:%s" % (k, str(neuron._w[0, k]), layer_minus_one._delta[k]) )
+                self._delta[i, 0] = self._delta[i, 0] + neuron_l_minus_one._w_minus_one[0, k] * layer_minus_one._delta[k - 1]
+                print("InputLayer w%s:%s delta(l+1):%s delta(l)" %
+                      (i, str(neuron_l_minus_one._w_minus_one[0, k]), layer_minus_one._delta[k - 1]), str(self._delta[i, 0]) )
+
+
+        print("Inputlayer: delta(l)" + str(self._delta))
 
 input_vector = np.array((2, 3)).reshape(2, 1)
 
