@@ -142,12 +142,12 @@ class NeuronLayer(object):
             for k in range(1, neuron._num_of_inputs):
                 # every neuron has _num_of_inputs - 1 inputs, because 0 input is 1
                 neuron._w[0, k] = neuron._w_minus_one[0, k] + self._learning_rate * self._delta[i] * neuron._inputs[k]
-                print("\t w(n)%s:%s input:%s" % (k, str(neuron._w_minus_one[0, k]), str(neuron._inputs[k])) )
-                print("\t w(n+1)%s:%s" % (k, str(neuron._w[0, k])) )
+                # print("\t w(n)%s:%s input:%s" % (k, str(neuron._w_minus_one[0, k]), str(neuron._inputs[k])) )
+                # print("\t w(n+1)%s:%s" % (k, str(neuron._w[0, k])) )
 
 class OutputLayer(NeuronLayer):
-    _e = 0.0        # output error
-    _d = 0.0        # desired output
+    _e = None        # output error
+    _d = None        # desired output
 
     def __init__(self, number_of_neurons, number_of_inputs, previous_layer):
         super(OutputLayer, self).__init__(number_of_neurons, number_of_inputs, previous_layer)
@@ -160,11 +160,11 @@ class OutputLayer(NeuronLayer):
 
         self._d = desired_output
         self._e = self._d - self.get_layer_output()
-        print("OutputLayer error: " + str(self._e))
+        # print("OutputLayer error: " + str(self._e))
 
         # Haykin "Backward computation" page 141
         self._delta = np.multiply(self._e, self._phi_derivative_array)
-        print("OutputLayer _delta: " + str(self._delta))
+        # print("OutputLayer _delta: " + str(self._delta))
 
         self.recalculate_weghts()
 
@@ -187,10 +187,10 @@ class InputLayer(NeuronLayer):
             for k in range(layer_minus_one.get_neurons_number()):
                 neuron_l_minus_one = layer_minus_one._layer[k]
                 self._delta[i, 0] = self._delta[i, 0] + neuron_l_minus_one._w_minus_one[0, k] * layer_minus_one._delta[k - 1]
-                print("InputLayer w%s:%s delta(l+1):%s delta(l)" %
-                      (i, str(neuron_l_minus_one._w_minus_one[0, k]), layer_minus_one._delta[k - 1]), str(self._delta[i, 0]) )
+                # print("InputLayer w%s:%s delta(l+1):%s delta(l)" %
+                #       (i, str(neuron_l_minus_one._w_minus_one[0, k]), layer_minus_one._delta[k - 1]), str(self._delta[i, 0]) )
 
-        print("Inputlayer: delta(l)" + str(self._delta))
+        # print("Inputlayer: delta(l)" + str(self._delta))
 
         self.recalculate_weghts()
 
@@ -200,18 +200,34 @@ class InputLayer(NeuronLayer):
 # n.calculate_local_field(input_vector)
 # print("neuron:\n" + str(n))
 
+# input_vector = np.array((1, 1)).reshape(2, 1)
+# desired = np.array((1, 2)).reshape(2, 1)
+# desired = np.array((1.60065595, 1.60065595)).reshape(2, 1)
+# desired = np.array((1.54257532))
+
 nl_1 = InputLayer(number_of_neurons = 2, number_of_inputs = 2)
 nl_2 = OutputLayer(number_of_neurons = 1, number_of_inputs = 2, previous_layer = nl_1)
 
-input_vector = np.array((1, 1)).reshape(2, 1)
-nl_1.forward(input_vector)
-nl_2.forward()
-print("Neural layer 2:" + str(nl_2))
+train_vector = list([
+    np.array((0, 0)).reshape(2, 1),
+    np.array((0, 1)).reshape(2, 1),
+    np.array((1, 0)).reshape(2, 1),
+    np.array((1, 1)).reshape(2, 1),
+])
 
-# desired = np.array((1, 2)).reshape(2, 1)
-# desired = np.array((1.60065595, 1.60065595)).reshape(2, 1)
+desired_vector = list([
+    np.array((0)),
+    np.array((1)),
+    np.array((1)),
+    np.array((0))
+])
 
-desired = np.array((1.54257532))
+for iter in range(1000):
+    for k in range(4):
+        nl_1.forward(train_vector[k])
+        nl_2.forward()
+        # print("Neural layer 2:" + str(nl_2))
 
-nl_2.backward(desired)
-nl_1.backward(layer_minus_one = nl_2)
+        nl_2.backward(desired_vector[k])
+        nl_1.backward(layer_minus_one = nl_2)
+        print("input: %s output: %s desired_output: %s" % (str(train_vector[k]), str(nl_2.get_layer_output()), str(desired_vector[k])) )
