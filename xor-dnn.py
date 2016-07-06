@@ -194,7 +194,6 @@ class InputLayer(NeuronLayer):
 
         self.recalculate_weghts()
 
-input_vector = np.array((2, 3)).reshape(2, 1)
 
 # neuron test
 # n = Neuron(2)
@@ -202,14 +201,17 @@ input_vector = np.array((2, 3)).reshape(2, 1)
 # print("neuron:\n" + str(n))
 
 nl_1 = InputLayer(number_of_neurons = 2, number_of_inputs = 2)
-nl_1.forward(input_vector)
+nl_2 = OutputLayer(number_of_neurons = 1, number_of_inputs = 2, previous_layer = nl_1)
 
-nl_2 = OutputLayer(number_of_neurons = 2, number_of_inputs = 2, previous_layer = nl_1)
+input_vector = np.array((1, 1)).reshape(2, 1)
+nl_1.forward(input_vector)
 nl_2.forward()
 print("Neural layer 2:" + str(nl_2))
 
 # desired = np.array((1, 2)).reshape(2, 1)
-desired = np.array((1.60065595, 1.60065595)).reshape(2, 1)
+# desired = np.array((1.60065595, 1.60065595)).reshape(2, 1)
+
+desired = np.array((1.54257532))
 
 nl_2.backward(desired)
 nl_1.backward(layer_minus_one = nl_2)
