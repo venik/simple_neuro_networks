@@ -10,17 +10,17 @@ layer = NeuronLayer(
     hasBias=False,
     activation_function = HardLim)
 
-layer.calculate_local_field(np.array(([1, -1, -1])))
+layer.calculate_local_field(np.array(([1, -1, -1])).reshape(3, 1))
 print("Layer: " + str(layer))
-layer.trainining(np.array(([0])))
-print("Layer: " + str(layer))
-
-layer.calculate_local_field(np.array(([1, 1, -1])))
-print("Layer: " + str(layer))
-layer.trainining(np.array(([1])))
+layer.trainining(np.array(([0, 1])).reshape(2, 1))
 print("Layer: " + str(layer))
 
-layer.calculate_local_field(np.array(([1, -1, -1])))
-print("Layer: " + str(layer))
-layer.trainining(np.array(([0])))
-print("Layer: " + str(layer))
+# layer.calculate_local_field(np.array(([1, 1, -1])))
+# print("Layer: " + str(layer))
+# layer.trainining(np.array(([1])))
+# print("Layer: " + str(layer))
+
+# layer.calculate_local_field(np.array(([1, -1, -1])))
+# print("Layer: " + str(layer))
+# layer.trainining(np.array(([0])))
+# print("Layer: " + str(layer))
