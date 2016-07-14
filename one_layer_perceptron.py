@@ -5,12 +5,22 @@ from lib.transferfunction import HardLim
 from lib.neuron import NeuronLayer
 
 layer = NeuronLayer(
-    num_of_neurons = 2,
-    num_of_inputs = 2,
+    num_of_neurons = 1,
+    num_of_inputs = 1,
+    hasBias=False,
     activation_function = HardLim)
 
-input_vector = np.array((0, 0)).reshape(2, 1)
+layer.calculate_local_field(np.array(([1, 2])))
+print("Layer: " + str(layer))
+layer.trainining(np.array(([1])))
+print("Layer: " + str(layer))
 
-layer.calculate_local_field(input_vector)
+layer.calculate_local_field(np.array(([-1, 2])))
+print("Layer: " + str(layer))
+layer.trainining(np.array(([0])))
+print("Layer: " + str(layer))
 
+layer.calculate_local_field(np.array(([0, -1])))
+print("Layer: " + str(layer))
+layer.trainining(np.array(([1])))
 print("Layer: " + str(layer))

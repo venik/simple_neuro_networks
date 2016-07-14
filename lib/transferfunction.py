@@ -44,7 +44,8 @@ class HardLim(ActivationFunction):
         super(HardLim, self).__init__()
 
     def get_phi(self, local_field):
-        return (local_field < 0) + 1
+        # True is 1 and False is 0, so need to multiply to get float value
+        return (local_field >= 0) * 1
 
     def get_phi_derivative(self, local_field):
         raise NotImplementedError, "HardLim.get_phi_derivative() hardlim doesnt have derivative, " \
