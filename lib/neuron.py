@@ -7,7 +7,7 @@ class NeuronLayer(object):
     _v = 0.0       # local field
     _y = 0.0       # output
     _w = None       # row vector of weights
-    _zero_input = np.array(([1]))
+    _b = None
     _hasBias = False
     _inputs = None
 
@@ -26,7 +26,8 @@ class NeuronLayer(object):
         # row i - neuron i
         # column j - weight of a neuron in a corresponding row
         # self._w = np.ones((self._num_of_neurons, self._num_of_inputs)) / np.sqrt(self._num_of_inputs)
-        self._w = np.array((1.0, -0.8)).reshape(1, 2)
+        self._w = np.array((0.5, -1.0, -0.5)).reshape(1, 3)
+        self._b = np.array((0.5))
 
         # allocate input vector
         self._inputs = np.zeros((self._num_of_inputs, 1))
@@ -36,7 +37,7 @@ class NeuronLayer(object):
         # assert(inputs.__len__() == self._w.__len__(), "Input and number of inputs do not match")
         # TODO: fix for the Bias vector
         self._inputs = inputs
-        self._v = self._w.dot(self._inputs)
+        self._v = self._w.dot(self._inputs) + self._hasBias * self._b
         self._y = self._activation_function.get_phi(self._v)
 
     def trainining(self, target):
@@ -44,10 +45,9 @@ class NeuronLayer(object):
             return
 
         # [NND] equation (4.33) for HardLim (TODO: make it part of the transfer function)
-        if self._y == 0:
-            self._w = self._w + self._inputs
-        else:
-            self._w = self._w - self._inputs
+        e = target - self.get_output()
+        self._w = self._w + e * self._inputs
+        self._b = self._b + e
 
     def get_local_field(self):
         return self._v
