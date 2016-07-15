@@ -1,0 +1,6 @@
+# archives
+*.gz
+
+# uncompressed datasets
+t10k-*
+train-*
