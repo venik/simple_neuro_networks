@@ -1,0 +1,43 @@
+#!/usr/bin/env octave
+
+% train data set
+fname_train_dataset = "../../data_set/mnist/train-images-idx3-ubyte";
+fd_tds = fopen(fname_train_dataset, "r");
+[val, vsize] = fread(fname_train_dataset, 4, 'uint32', 'ieee-be');
+fprintf("vsize: %d\n magic number:%d num of images:%d num of rows:%d num of columns:%d\n", vsize, val(1), val(2), val(3), val(4) );
+
+% labels
+fname_labels_dataset = "../../data_set/mnist/train-labels-idx1-ubyte";
+fd_labels_tds = fopen(fname_labels_dataset, "r");
+[lval, lvsize] = fread(fd_labels_tds, 2, 'uint32', 'ieee-be');
+fprintf("vsize: %d\n magic number:%d num of images:%d\n", lvsize, lval(1), lval(2) );
+
+% read an image
+[picture, vsize] = fread(fname_train_dataset, 784, 'uint8');
+[picture, vsize] = fread(fname_train_dataset, 784, 'uint8');
+[picture, vsize] = fread(fname_train_dataset, 784, 'uint8');
+[picture, vsize] = fread(fname_train_dataset, 784, 'uint8');
+[picture, vsize] = fread(fname_train_dataset, 784, 'uint8');
+[picture, vsize] = fread(fname_train_dataset, 784, 'uint8');
+[picture, vsize] = fread(fname_train_dataset, 784, 'uint8');
+[picture, vsize] = fread(fname_train_dataset, 784, 'uint8');
+picture_2d = reshape(picture, 28, 28);
+
+% read label
+[label, vsize] = fread(fd_labels_tds, 1, 'uint8');
+[label, vsize] = fread(fd_labels_tds, 1, 'uint8');
+[label, vsize] = fread(fd_labels_tds, 1, 'uint8');
+[label, vsize] = fread(fd_labels_tds, 1, 'uint8');
+[label, vsize] = fread(fd_labels_tds, 1, 'uint8');
+[label, vsize] = fread(fd_labels_tds, 1, 'uint8');
+[label, vsize] = fread(fd_labels_tds, 1, 'uint8');
+[label, vsize] = fread(fd_labels_tds, 1, 'uint8');
+fprintf('label: %d\n', label);
+
+
+% show it
+image(picture_2d)
+pause
+
+% close all
+fclose (fname_train_dataset);
