@@ -2,5 +2,5 @@ How to run matloplib from python virtualenv
 basic idea:
 http://stackoverflow.com/questions/21784641/installation-issue-with-matplotlib-python
 
-in short
-	
+in short execute
+echo "backend: TkAgg" > ~/.matplotlib/matplotlibrc
