@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 
 import matplotlib.pyplot as plt
-import matplotlib.image as mpimg
 import numpy as np
 import matplotlib.cm as cm
 
@@ -21,7 +20,7 @@ print("magic number:%d num of images:%d num of rows:%d num of columns:%d\n" % (t
 #data = np.fromstring(fd_tds.read(784)).reshape((28, 28))
 #data = np.array(fd_tds.read(784), np.uint8)
 
-fd_tds.seek(784 * 33, 1)
+fd_tds.seek(784 * 0, 1)
 
 data = np.fromfile(fd_tds, dtype=np.uint8, count=28 * 28)
 array = np.reshape(data, [28, 28], order='C')
