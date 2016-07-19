@@ -11,6 +11,8 @@ class NeuronLayer(object):
     _hasBias = False
     _inputs = None
 
+    _target = None
+
     _num_of_inputs = 0  # number of the inputs of every neuron
     _num_of_neurons = 0 # number of neurons in the Layer
 
@@ -29,13 +31,13 @@ class NeuronLayer(object):
         # self._b = np.array(([0.5, -0.5])).reshape(2, 1)
 
         # TODO: how to choose proper weights here ??
-        self._w = np.array(np.random.uniform(low=-2.0,
-                                             high=2.0,
+        self._w = np.array(np.random.uniform(low=-255,
+                                             high=255,
                                              size=self._num_of_neurons*self._num_of_inputs)).reshape(self._num_of_neurons,
                                                                                                      self._num_of_inputs)
         # TODO: how to choose proper weights ????
-        self._b = np.array(np.random.uniform(low=-2.0,
-                                             high=2.0,
+        self._b = np.array(np.random.uniform(low=-255,
+                                             high=255,
                                              size=self._num_of_neurons)).reshape(self._num_of_neurons, 1)
 
         # allocate input vector
@@ -53,8 +55,10 @@ class NeuronLayer(object):
         # if np.equal(target, self._y).all():
         #     return
 
+        self._target = target
+
         # [NND] equation (4.33) for HardLim (TODO: make it part of the transfer function)
-        e = (target - self.get_output()).reshape(self._num_of_neurons, 1)
+        e = (self._target - self.get_output()).reshape(self._num_of_neurons, 1)
         self._w = self._w + e * self._inputs.transpose()
         self._b = self._b + e
 
@@ -65,5 +69,5 @@ class NeuronLayer(object):
         return self._y.reshape(self._num_of_neurons, 1)
 
     def __str__(self):
-        return "Weights (w): \n%s\n Bias (b):\n%s\nInputs: %s\nLocal field(v): %s\nOutput(o): %s" %\
-               (str(self._w), str(self._b), str(self._inputs), str(self._v), str(self._y))
+        return "Weights (w): \n%s\n Bias (b):\n%s\nInputs: %s\nLocal field(v):\n%s\nOutput(o):\n%s\nTarget\n:%s" %\
+               (str(self._w), str(self._b), "empty", str(self._v), str(self._y), str(self._target))

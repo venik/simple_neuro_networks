@@ -12,6 +12,7 @@ class mnist(object):
     _fname_train_dataset = ""
     _fname_labels_dataset = ""
     _last_frame = 0
+    _frames_in_dataset = 0
 
     # contstants. all details on the Yann's site
     _data_header_size = 16
@@ -33,7 +34,8 @@ class mnist(object):
 
         self._fd_tds = open(self._fname_train_dataset, 'rb')
         # just skip file header, all details on the Yann's site
-        train_head = struct.unpack(self._data_header_pattern, self._fd_tds.read(self._data_header_size))
+        # format (magic_number, num_of_frames, rows, columns)
+        (_, self._frames_in_dataset, _, _) = struct.unpack(self._data_header_pattern, self._fd_tds.read(self._data_header_size))
         # print("magic number:%d num of images:%d num of rows:%d num of columns:%d" %
         #       (train_head[0], train_head[1], train_head[2], train_head[3]) )
 
@@ -72,3 +74,6 @@ class mnist(object):
         if self._fd_tls != None:
             self._fd_tls.close()
             self._fd_tls = None
+
+    def get_frames_in_dataset(self):
+        return self._frames_in_dataset
