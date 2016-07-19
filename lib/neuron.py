@@ -34,13 +34,13 @@ class NeuronLayer(object):
     @classmethod
     def generate_weights(cls, num_of_neurons, num_of_inputs, hasBias, activation_function):
         # TODO: how to choose proper weights here ??
-        weights = np.array(np.random.uniform(low = -255,
-                                             high = 255,
+        weights = np.array(np.random.uniform(low = -2,
+                                             high = 2,
                                              size = num_of_neurons * num_of_inputs)).reshape(num_of_neurons, num_of_inputs)
 
         # TODO: how to choose proper weights ????
-        biases = np.array(np.random.uniform(low = -255,
-                                             high = 255,
+        biases = np.array(np.random.uniform(low = -2,
+                                             high = 2,
                                              size = num_of_neurons)).reshape(num_of_neurons, 1)
 
         return cls(num_of_neurons, num_of_inputs, hasBias, activation_function, weights, biases)
@@ -69,6 +69,12 @@ class NeuronLayer(object):
 
     def get_output(self):
         return self._y.reshape(self._num_of_neurons, 1)
+
+    def get_weights(self):
+        return self._w
+
+    def get_biases(self):
+        return self._b
 
     def __str__(self):
         return "Weights (w): \n%s\n Bias (b):\n%s\nInputs: %s\nLocal field(v):\n%s\nOutput(o):\n%s\nTarget\n:%s" %\

@@ -9,10 +9,12 @@ import struct
 import numpy as np
 
 class mnist(object):
-    _fname_train_dataset = ""
-    _fname_labels_dataset = ""
+    _isTrainMode = False
+    _fname_dataset = ""
+    _fname_labels = ""
     _last_frame = 0
     _frames_in_dataset = 0
+    _labels_in_dataset = 0
 
     # contstants. all details on the Yann's site
     _data_header_size = 16
@@ -26,25 +28,27 @@ class mnist(object):
     _fd_tds = None
     _fd_tls = None
 
-    def __init__(self, mnist_folder):
-        self._fname_train_dataset = mnist_folder + "/train-images-idx3-ubyte"
-        self._fname_labels_dataset = mnist_folder + "/train-labels-idx1-ubyte"
+    def __init__(self, mnist_folder, isTrainMode = True):
+        self._isTrainMode = isTrainMode
+        if (self._isTrainMode == True):
+            self._fname_dataset = mnist_folder + "/train-images-idx3-ubyte"
+            self._fname_labels = mnist_folder + "/train-labels-idx1-ubyte"
+        else:
+            self._fname_dataset = mnist_folder + "/t10k-images-idx3-ubyte"
+            self._fname_labels = mnist_folder + "/t10k-labels-idx1-ubyte"
 
         self._last_frame = 0
 
-        self._fd_tds = open(self._fname_train_dataset, 'rb')
+        self._fd_tds = open(self._fname_dataset, 'rb')
         # just skip file header, all details on the Yann's site
         # format (magic_number, num_of_frames, rows, columns)
         (_, self._frames_in_dataset, _, _) = struct.unpack(self._data_header_pattern, self._fd_tds.read(self._data_header_size))
-        # print("magic number:%d num of images:%d num of rows:%d num of columns:%d" %
-        #       (train_head[0], train_head[1], train_head[2], train_head[3]) )
 
-        self._fd_tls = open(self._fname_labels_dataset, 'rb')
-        labels_head = struct.unpack(self._label_header_pattern, self._fd_tls.read(self._label_header_size))
-        # print("magic number:%d num of images:%d" %
-        #      (labels_head[0], labels_head[1]) )
+        self._fd_tls = open(self._fname_labels, 'rb')
+        (_, self._labels_in_dataset) = struct.unpack(self._label_header_pattern, self._fd_tls.read(self._label_header_size))
 
-    def get_arbitrary_train_frame(self, frame_id):
+
+    def get_arbitrary_frame(self, frame_id):
         # assert((self._fd_tds == None) or (self._fd_tls == None), "mnist data set were teared down")
 
         self._last_frame = frame_id
@@ -54,10 +58,10 @@ class mnist(object):
         self._fd_tds.seek(self._data_header_size + self._frame_size * self._last_frame, 0)
         self._fd_tls.seek(self._label_header_size + self._label_size * self._last_frame, 0)
 
-        (label, data) = self.get_next_train_frame()
+        (label, data) = self.get_next_frame()
         return (label, data)
 
-    def get_next_train_frame(self):
+    def get_next_frame(self):
         data = np.fromfile(self._fd_tds, dtype=np.uint8, count=self._frame_size)
         label = np.fromfile(self._fd_tls, dtype=np.uint8, count=self._label_size)
 
@@ -75,5 +79,5 @@ class mnist(object):
             self._fd_tls.close()
             self._fd_tls = None
 
-    def get_frames_in_dataset(self):
+    def get_num_of_frames_in_dataset(self):
         return self._frames_in_dataset
