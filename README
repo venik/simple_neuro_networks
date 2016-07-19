@@ -1,3 +1,7 @@
+Sources
+
+src/one_layer_mnist/ - implementation of the 1 layer perceptron. it was trained against MNIST data set with 60k samples, checked against 10k samples with ~70% success
+
 Books that I've read and can recommend
 
 [NND] M.Hagan H.Demuth - Neural Network Design (2nd Edition) - extremally cheap (~25$ on Amazon) but super usefull, also contains introduction into linear algebra
