@@ -17,14 +17,14 @@ from lib.neuron import NeuronLayer
 data_set = mnist('../../data_set/mnist')
 
 
-layer = NeuronLayer(
+layer = NeuronLayer.generate_weights(
     num_of_neurons = 10,
     num_of_inputs = 784,
     hasBias=False,
     activation_function = HardLim)
 
 # learning
-for k in range(0, 9997):
+for k in range(0, 9999):
     (label, data) = data_set.get_next_train_frame()
     print("%s: label:%s" % (str(k), str(label)))
     # print("Layer: " + str(layer))
@@ -37,5 +37,7 @@ for k in range(0, 9997):
     desired_output[label] = 1
     layer.trainining(desired_output)
 
+
+data_set.tear_down()
 
 print("Layer: " + str(layer))

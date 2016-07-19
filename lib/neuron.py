@@ -18,30 +18,32 @@ class NeuronLayer(object):
 
     _activation_function = None     # transfer function
 
-    def __init__(self, num_of_neurons, num_of_inputs, hasBias, activation_function):
+    def __init__(self, num_of_neurons, num_of_inputs, hasBias, activation_function, weights, biases):
         self._hasBias = hasBias
         self._num_of_inputs = num_of_inputs
         self._num_of_neurons = num_of_neurons
 
         self._activation_function = activation_function()
 
-        # row i - neuron i
-        # column j - weight of a neuron in a corresponding row
-        # self._w = np.ones((self._num_of_neurons, self._num_of_inputs)) / np.sqrt(self._num_of_inputs)
-        # self._b = np.array(([0.5, -0.5])).reshape(2, 1)
-
-        # TODO: how to choose proper weights here ??
-        self._w = np.array(np.random.uniform(low=-255,
-                                             high=255,
-                                             size=self._num_of_neurons*self._num_of_inputs)).reshape(self._num_of_neurons,
-                                                                                                     self._num_of_inputs)
-        # TODO: how to choose proper weights ????
-        self._b = np.array(np.random.uniform(low=-255,
-                                             high=255,
-                                             size=self._num_of_neurons)).reshape(self._num_of_neurons, 1)
-
         # allocate input vector
         self._inputs = np.zeros((self._num_of_inputs, 1))
+
+        self._w = weights
+        self._b = biases
+
+    @classmethod
+    def generate_weights(cls, num_of_neurons, num_of_inputs, hasBias, activation_function):
+        # TODO: how to choose proper weights here ??
+        weights = np.array(np.random.uniform(low = -255,
+                                             high = 255,
+                                             size = num_of_neurons * num_of_inputs)).reshape(num_of_neurons, num_of_inputs)
+
+        # TODO: how to choose proper weights ????
+        biases = np.array(np.random.uniform(low = -255,
+                                             high = 255,
+                                             size = num_of_neurons)).reshape(num_of_neurons, 1)
+
+        return cls(num_of_neurons, num_of_inputs, hasBias, activation_function, weights, biases)
 
     # inputs is numpy.array column vector
     def calculate_local_field(self, inputs):
