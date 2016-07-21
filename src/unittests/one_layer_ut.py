@@ -85,7 +85,7 @@ class TestOneLayerPerceptron(unittest.TestCase):
         self.assertEqual(layer.get_output(), output)
 
     def testPositiveTrainingNoChangesWithBias(self):
-        (layer, _, weights, biases, _, _, output) = self.getLayerWithPositiveOutput(hasBias = False)
+        (layer, _, weights, biases, _, _, output) = self.getLayerWithPositiveOutput(hasBias = True)
 
         layer.trainining(target = output)
 
@@ -94,7 +94,7 @@ class TestOneLayerPerceptron(unittest.TestCase):
         self.assertTrue(np.equal(layer.get_biases(), biases).all())
 
     def testPositiveTrainingWithChangesWithBias(self):
-        (layer, input, weights, biases, _, _, output) = self.getLayerWithPositiveOutput(hasBias = False)
+        (layer, input, weights, biases, _, _, output) = self.getLayerWithPositiveOutput(hasBias = True)
 
         layer.trainining(output - 1)
 
@@ -103,7 +103,7 @@ class TestOneLayerPerceptron(unittest.TestCase):
         self.assertTrue(np.equal(layer.get_biases(), biases - 1).all())
 
     def testNegativeTrainingWithChangesWithBias(self):
-        (layer, input, weights, biases, _, _, output) = self.getLayerWithNegativeOutput(hasBias = False)
+        (layer, input, weights, biases, _, _, output) = self.getLayerWithNegativeOutput(hasBias = True)
 
         layer.trainining(output + 1)
 
