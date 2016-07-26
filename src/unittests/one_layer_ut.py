@@ -87,7 +87,7 @@ class TestOneLayerPerceptron(unittest.TestCase):
     def testPositiveTrainingNoChangesWithBias(self):
         (layer, _, weights, biases, _, _, output) = self.getLayerWithPositiveOutput(hasBias = True)
 
-        layer.trainining(target = output)
+        layer.training(target = output)
 
         # output 1 desired 1 - no changes in weights
         self.assertTrue(np.equal(layer.get_weights(), weights).all())
@@ -96,7 +96,7 @@ class TestOneLayerPerceptron(unittest.TestCase):
     def testPositiveTrainingWithChangesWithBias(self):
         (layer, input, weights, biases, _, _, output) = self.getLayerWithPositiveOutput(hasBias = True)
 
-        layer.trainining(output - 1)
+        layer.training(output - 1)
 
         # output 1 desired 0 - substrata transpose input from weights
         self.assertTrue(np.equal(layer.get_weights(), weights - input.reshape(1, 2)).all())
@@ -105,7 +105,7 @@ class TestOneLayerPerceptron(unittest.TestCase):
     def testNegativeTrainingWithChangesWithBias(self):
         (layer, input, weights, biases, _, _, output) = self.getLayerWithNegativeOutput(hasBias = True)
 
-        layer.trainining(output + 1)
+        layer.training(output + 1)
 
         # output 1 desired 0 - substrata transpose input from weights
         self.assertTrue(np.equal(layer.get_weights(), weights + input.reshape(1, 2)).all())

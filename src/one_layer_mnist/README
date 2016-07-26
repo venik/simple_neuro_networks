@@ -1,0 +1,5 @@
+Classical Widrow-Hoff network with 1 layer and hardlim transfer function.
+
+[TODO]: some explanation
+
+More details can be found in the [NND] http://hagan.okstate.edu/NNDesign.pdf Chapter 3 (about hardlim transfer function), Chapter 4 about perceptron and Chapter 7 about Widrow-Hoff learning rule

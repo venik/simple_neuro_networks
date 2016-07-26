@@ -13,6 +13,9 @@ class NeuronLayer(object):
 
     _target = None
 
+    _alpha = 0.1        # learning rate
+    _gamma = 0.0
+
     _num_of_inputs = 0  # number of the inputs of every neuron
     _num_of_neurons = 0 # number of neurons in the Layer
 
@@ -53,16 +56,17 @@ class NeuronLayer(object):
         self._y = self._activation_function.get_phi(self._v)
 
     # target - row
-    def trainining(self, target):
+    def training(self, target):
         # if np.equal(target, self._y).all():
         #     return
 
         self._target = target
 
         # [NND] equation (4.33) for HardLim (TODO: make it part of the transfer function)
+        # [NND] equation (7,45) for the Widrow-Hoff learning rule
         e = (self._target - self.get_output()).reshape(self._num_of_neurons, 1)
-        self._w = self._w + e * self._inputs.transpose()
-        self._b = self._b + e
+        self._w = (1 - self._gamma) * self._w + self._alpha * e * self._inputs.transpose()
+        self._b = (1 - self._gamma) * self._b + self._alpha * e
 
     def get_local_field(self):
         return self._v

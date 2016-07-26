@@ -12,12 +12,12 @@ layer = NeuronLayer(
 
 layer.calculate_local_field(np.array(([1, -1, -1])).reshape(3, 1))
 print("Layer: " + str(layer))
-layer.trainining(np.array(([-1, -1])).reshape(2, 1))
+layer.training(np.array(([-1, -1])).reshape(2, 1))
 # print("Layer: " + str(layer))
 
 layer.calculate_local_field(np.array(([1, -1, -1])).reshape(3, 1))
 # print("Layer: " + str(layer))
-layer.trainining(np.array(([-1, -1])).reshape(2, 1))
+layer.training(np.array(([-1, -1])).reshape(2, 1))
 print("Layer: " + str(layer))
 
 # layer.calculate_local_field(np.array(([1, 1, -1])))

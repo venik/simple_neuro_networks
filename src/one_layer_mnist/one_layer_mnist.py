@@ -30,7 +30,7 @@ for k in range(0, 59999):
 
     desired_output = np.zeros(10).reshape(10, 1)
     desired_output[label] = 1
-    layer.trainining(desired_output)
+    layer.training(desired_output)
 
 print("Layer: " + str(layer))
 
