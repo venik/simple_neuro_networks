@@ -36,14 +36,14 @@ class NeuronLayer(object):
 
     @classmethod
     def generate_weights(cls, num_of_neurons, num_of_inputs, hasBias, activation_function):
-        # TODO: how to choose proper weights here ??
-        weights = np.array(np.random.uniform(low = -2,
-                                             high = 2,
+        # [Cristiani-SVM] 2.1.1 Rosenblatt's Perceptron - weights can be initialized with 0
+        weights = np.array(np.random.uniform(low = 0,
+                                             high = 0,
                                              size = num_of_neurons * num_of_inputs)).reshape(num_of_neurons, num_of_inputs)
 
-        # TODO: how to choose proper weights ????
-        biases = np.array(np.random.uniform(low = -2,
-                                             high = 2,
+        # [Cristiani-SVM] 2.1.1 Rosenblatt's Perceptron - biases can be initialized with 0
+        biases = np.array(np.random.uniform(low = 0,
+                                             high = 0,
                                              size = num_of_neurons)).reshape(num_of_neurons, 1)
 
         return cls(num_of_neurons, num_of_inputs, hasBias, activation_function, weights, biases)
