@@ -65,11 +65,18 @@ for iter=1:iterations
     centroid_num = centroid_num + 2;
 end
 
-centroids(1:centroid_num + 1, :)
 iter
 
+centroids(1:2:centroid_num-1,:)
+centroids(2:2:centroid_num-1,:)
+
 plot3(x(:, 1), x(:, 2), x(:,3), 'o',
-        centroids(centroid_num:centroid_num+1, 1), centroids(centroid_num:centroid_num+1, 2), centroids(centroid_num:centroid_num+1, 3), 'rx', 'markersize', 15);
+        centroids(1:2:centroid_num-1, 1), centroids(1:2:centroid_num-1, 2), centroids(1:2:centroid_num-1, 3),
+            'gx', 'markersize', 15, 'LineWidth', 3,
+        centroids(2:2:centroid_num-1, 1), centroids(2:2:centroid_num-1, 2), centroids(2:2:centroid_num-1, 3),
+            'mx', 'markersize', 15, 'LineWidth', 3,
+        centroids(centroid_num:centroid_num+1, 1), centroids(centroid_num:centroid_num+1, 2), centroids(centroid_num:centroid_num+1, 3),
+            'r*', 'markersize', 15, 'LineWidth', 3);
 ylim([0 5]), xlim([0 10]), zlim([0 10]);
 grid on;
 pause();
