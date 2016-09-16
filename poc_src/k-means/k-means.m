@@ -71,8 +71,9 @@ iter
 hold on;
     plot(x(:, 1), x(:, 2), 'o');
     ylim([0 5]), xlim([0 10]);
-    grid on;
-    plot(centroids(1:centroid_num, 1), centroids(1:centroid_num, 2), 'rx');
+    grid on; plot(centroids(1:2:centroid_num-1, 1), centroids(1:2:centroid_num-1, 2), 'gx', 'markersize', 15, 'LineWidth', 3);
+    grid on; plot(centroids(2:2:centroid_num-1, 1), centroids(2:2:centroid_num-1, 2), 'mx', 'markersize', 15, 'LineWidth', 3);
+    grid on; plot(centroids(centroid_num:centroid_num+1, 1), centroids(centroid_num:centroid_num+1, 2), 'r*', 'markersize', 15, 'LineWidth', 3);
     hold off;
     pause();
 

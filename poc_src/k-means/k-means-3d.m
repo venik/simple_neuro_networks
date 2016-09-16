@@ -6,7 +6,7 @@
 fprintf("y0y0\n");
 
 samples = 1000;
-sigma = 1;
+sigma = 2;
 x = zeros(samples, 3);
 x(1:samples / 2, :) = sigma * randn(samples / 2 , 3) +  [1.5, 1.5, 1.5];
 x(samples / 2 + 1 : samples, :) = sigma * randn(samples / 2 , 3) +  [6.75, 2.5, 6.75];
