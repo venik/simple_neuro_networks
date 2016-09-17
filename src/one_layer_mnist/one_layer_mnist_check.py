@@ -48,7 +48,7 @@ for k in range(0, data_set.get_num_of_frames_in_dataset()):
         # print("d:%s\n o:%s" % (str(desired_output), str(layer.get_output())) )
 
 percentage = correct / k * 100
-print("correct percentage: %s" % str(percentage))
+print("correct percentage: {:.2f}".format(percentage))
 
 # tear down
 data_set.tear_down()
