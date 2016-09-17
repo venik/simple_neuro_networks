@@ -31,7 +31,12 @@ kmeans = KMeansBasic(data_set)
 
 centroids = np.array([[m0, m1, m2, m3, m4, m5, m6, m7, m8, m9]]).reshape(784, 10)
 
-kmeans.recalculate_centroids(iterations=20, centroids=centroids)
+(_, est_centroids) = kmeans.recalculate_centroids(iterations=40, centroids=centroids)
+
+# save weights and biases
+fd_neuro = open("est_centroids", "w")
+np.savez(fd_neuro, est_centroids)
 
 # tear down
 data_set.tear_down()
+fd_neuro.close()

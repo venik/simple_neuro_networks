@@ -7,9 +7,9 @@ __email__ = "nikiforov.al[a]gmail.com"
 __status__ = "Development"
 
 from sys import maxint, getsizeof
-from numpy import linalg as LA
+from numpy import linalg as la
 import numpy as np
-from array import  array
+from array import array
 
 class KMeansBasic(object):
     _data_set = None
@@ -39,7 +39,7 @@ class KMeansBasic(object):
                 closest_cluster = 0
                 min_distance = maxint
                 for cluster in range(0, cols):
-                    res = LA.norm(data - centroids[:, cluster])
+                    res = la.norm(data - centroids[:, cluster])
                     if res <= min_distance:
                         min_distance = res
                         closest_cluster = cluster
@@ -52,9 +52,9 @@ class KMeansBasic(object):
 
             # normalize coordinates
             for center in range(0, cols):
-                # print(str(center) + ": norm " + str(LA.norm(est_centers[:, center])))
+                # print(str(center) + ": norm " + str(la.norm(est_centers[:, center])))
                 est_centers[:, center] /= samples_in_cluster[center]
-                # print(str(center) + ": norm " + str(LA.norm(est_centers[:, center])))
+                # print(str(center) + ": norm " + str(la.norm(est_centers[:, center])))
 
             # update centroids
             centroids = est_centers
@@ -65,4 +65,4 @@ class KMeansBasic(object):
 
             print("sum:" + str(summ) + " samples in cluster: " + str(samples_in_cluster))
 
-        return False
+        return False, centroids
