@@ -10,28 +10,45 @@ sys.path.append('../../')
 from lib.mnist.mnist import *
 from lib.kmeansbasic import KMeansBasic
 
+
+def get_first_centroids(dataset):
+    (_, m0) = dataset.get_arbitrary_frame(0)
+    (_, m1) = dataset.get_next_frame()
+    (_, m2) = dataset.get_next_frame()
+    (_, m3) = dataset.get_next_frame()
+    (_, m4) = dataset.get_next_frame()
+    (_, m5) = dataset.get_next_frame()
+    (_, m6) = dataset.get_next_frame()
+    (_, m7) = dataset.get_next_frame()
+    (_, m8) = dataset.get_next_frame()
+    (_, m9) = dataset.get_next_frame()
+
+    return np.array((m0, m1, m2, m3, m4, m5, m6, m7, m8, m9)).reshape(10, 784)
+
+
+def get_centroids_around_digits(dataset):
+    center = 0
+    data_centroids = np.zeros(784 * 10).reshape(10, 784)
+
+    # reset to 0 frame
+    dataset.get_arbitrary_frame(0)
+    while center < 9:
+        (label, data) = dataset.get_next_frame()
+        if label == center:
+            center += 1
+            data_centroids[center, :] = data
+
+    return data_centroids
+
 # import data set
 data_set = mnist('../../data_set/mnist')
 
-# Dimensions size, MNIST is 784 (28 by 28 picture)
-dim = 784
 kmeans = KMeansBasic(data_set)
 
-# centroids = np.array()
-(_, m0) = data_set.get_next_frame()
-(_, m1) = data_set.get_next_frame()
-(_, m2) = data_set.get_next_frame()
-(_, m3) = data_set.get_next_frame()
-(_, m4) = data_set.get_next_frame()
-(_, m5) = data_set.get_next_frame()
-(_, m6) = data_set.get_next_frame()
-(_, m7) = data_set.get_next_frame()
-(_, m8) = data_set.get_next_frame()
-(_, m9) = data_set.get_next_frame()
+# centroids = get_first_centroids(data_set)
+centroids = get_centroids_around_digits(data_set)
 
-centroids = np.array([[m0, m1, m2, m3, m4, m5, m6, m7, m8, m9]]).reshape(784, 10)
-
-(_, est_centroids) = kmeans.recalculate_centroids(iterations=40, centroids=centroids)
+(_, est_centroids) = kmeans.recalculate_centroids(iterations=50, centroids=centroids)
 
 # save weights and biases
 fd_neuro = open("est_centroids", "w")
