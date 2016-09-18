@@ -50,11 +50,12 @@ class TestOneLayerPerceptron(unittest.TestCase):
         (_, m1) = data_set.get_next_frame()
 
         centers = np.array((m0, m1)).reshape(2, 2)
-        print("centers: " + str(centers))
 
         data_set.seek(0)
         kmeans = KMeansBasic(data_set)
-        kmeans.recalculate_centroids(iterations=10, centroids=centers)
+        (res, centroids) = kmeans.recalculate_centroids(iterations=10, centroids=centers)
+        self.assertTrue(res, True)
+        self.assertTrue((centroids == np.array((2, 1.5, 8, 3)).reshape(2, 2)).all())
 
 if __name__ == '__main__':
     unittest.main()
