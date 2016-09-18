@@ -21,6 +21,8 @@ est_centroids = npzfile['arr_0']
 samples_in_cluster = array("d", (0.0 for _ in range(0, cols)))
 sum_in_cluster = array("d", (0.0 for _ in range(0, cols)))
 
+hits = 0.0
+
 for k in range(0, data_set.get_num_of_frames_in_dataset()):
     (label, data) = data_set.get_next_frame()
 
@@ -29,19 +31,18 @@ for k in range(0, data_set.get_num_of_frames_in_dataset()):
     min_distance = maxint
     for cluster in range(0, rows):
         res = la.norm(data - est_centroids[cluster, :])
-        if res <= min_distance:
+        if res < min_distance:
             min_distance = res
             closest_cluster = cluster
 
-    sum_in_cluster[closest_cluster] += label
+    # print("cluster: " + str(closest_cluster) + " label: " + str(label))
+    if closest_cluster == label:
+        hits += 1
+
     samples_in_cluster[closest_cluster] += 1
 
-for k in range(0, rows):
-    sum_in_cluster[k] /= samples_in_cluster[k]
-    print(str(k) + ": round:" + str(round(sum_in_cluster[k])) + " average sum: {:.2f}".format(sum_in_cluster[k]))
-
-# rounded_res = [round(k) for k in sum_in_cluster]
-# print("list: " + str(sorted(rounded_res)))
+hits /= data_set.get_num_of_frames_in_dataset()
+print("hits {:.2f}".format(hits))
 
 # tear down
 data_set.tear_down()
