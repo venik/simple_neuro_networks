@@ -24,6 +24,7 @@ class KMeansBasic(object):
             self._data_set_list.append(self._data_set.get_next_frame())
 
         self._data_set_list_size = sample
+        print("KMeansBasic() data set has loaded")
         return
 
     def recalculate_centroids(self, iterations, centroids):
@@ -31,13 +32,13 @@ class KMeansBasic(object):
 
         for iter in range(0, iterations):
             est_centers = np.zeros((rows, cols))
-            samples_in_cluster = array("d", (0.0 for _ in range(0, cols)))
+            samples_in_cluster = array("d", (0.0 for _ in range(0, rows)))
             for (_, data) in self._data_set_list:
                 # print("data: " + str(data))
                 # calculate distance to a closest centroid
                 closest_cluster = 0
                 min_distance = maxint
-                for cluster in range(0, cols):
+                for cluster in range(0, rows):
                     # print("centroid: " + str(centroids[cluster, :]))
                     res = la.norm(data - centroids[cluster, :])
                     if res < min_distance:
@@ -51,9 +52,9 @@ class KMeansBasic(object):
                 # print("== Closest cluster: " + str(closest_cluster))
 
             # normalize coordinates
-            for center in range(0, cols):
+            for center in range(0, rows):
                 est_centers[center, :] /= samples_in_cluster[center]
-                print(str(center) + ": norm " + str(est_centers[center, :]))
+                # print(str(center) + ": norm " + str(est_centers[center, :]))
 
             # Converged solution
             if (centroids == est_centers).all():
