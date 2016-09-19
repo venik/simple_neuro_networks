@@ -5,12 +5,10 @@
 
 __author__ = 'Sasha Nikiforov nikiforov.al[at]gmail.com'
 
-from array import array
 import sys
 sys.path.append('../../')
 from lib.mnist.mnist import *
 from lib.kmeansbasic import KMeansBasic
-
 
 def get_first_centroids(dataset):
     (_, m0) = dataset.get_arbitrary_frame(0)
@@ -32,7 +30,7 @@ def get_centroids_around_digits(dataset):
     data_centroids = np.zeros(784 * 10).reshape(10, 784)
 
     # reset to 0 frame
-    dataset.get_arbitrary_frame(0)
+    dataset.get_arbitrary_frame(100)
     while center < 10:
         (label, data) = dataset.get_next_frame()
         if label == center:
@@ -53,7 +51,7 @@ centroids = get_centroids_around_digits(data_set)
 
 # save weights and biases
 fd_neuro = open("est_centroids", "w")
-np.savez(fd_neuro, est_centroids)
+np.savez(fd_neuro, est_centroids=est_centroids, centroids=centroids)
 
 # tear down
 data_set.tear_down()

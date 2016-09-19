@@ -15,7 +15,7 @@ data_set = mnist('../../data_set/mnist', isTrainMode=False)
 
 fd_centroids = open("est_centroids", "r")
 npzfile = np.load(fd_centroids)
-est_centroids = npzfile['arr_0']
+est_centroids = npzfile['est_centroids']
 (rows, cols) = est_centroids.shape
 
 samples_in_cluster = array("d", (0.0 for _ in range(0, cols)))
@@ -41,7 +41,7 @@ for k in range(0, data_set.get_num_of_frames_in_dataset()):
 
     samples_in_cluster[closest_cluster] += 1
 
-hits /= data_set.get_num_of_frames_in_dataset()
+# hits /= data_set.get_num_of_frames_in_dataset()
 print("hits {:.2f}".format(hits))
 
 # tear down
