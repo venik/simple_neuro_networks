@@ -42,7 +42,7 @@ for i in range(1, 10):
     solution[i, :] = x.reshape(1, 2)
     print("x: " + str(solution[i, :]))
 
-cc.plot(solution[:, 0], solution[:, 1], 'r^')
+cc.plot(solution[:, 0], solution[:, 1], '-r^')
 
 plt.grid()
 plt.show()
