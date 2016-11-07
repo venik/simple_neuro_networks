@@ -5,6 +5,7 @@
 import numpy as np
 from abc import abstractmethod
 
+
 class ActivationFunction(object):
     _threshold = 0
 
@@ -16,11 +17,12 @@ class ActivationFunction(object):
 
     @abstractmethod
     def get_phi(self, number_of_neurons, number_of_neurons_next_layer):
-        raise NotImplementedError, "ActivationFunction class, get_phi() has to be implemented"
+        raise NotImplementedError("ActivationFunction class, get_phi() has to be implemented")
 
     @abstractmethod
     def get_phi_derivative(self, local_field):
-        raise NotImplementedError, "ActivationFunction class, get_phi_derivative() has to be implemented"
+        raise NotImplementedError("ActivationFunction class, get_phi_derivative() has to be implemented")
+
 
 class HyperbolicTangent(ActivationFunction):
     # Haykin page 145 - "3. Activation function"
@@ -38,6 +40,7 @@ class HyperbolicTangent(ActivationFunction):
     def get_phi_derivative(self, output_signal):
         return self._ab * (self._a - output_signal) * (self._a + output_signal)
 
+
 class HardLim(ActivationFunction):
 
     def __init__(self):
@@ -48,5 +51,5 @@ class HardLim(ActivationFunction):
         return (local_field >= 0) * 1
 
     def get_phi_derivative(self, local_field):
-        raise NotImplementedError, "HardLim.get_phi_derivative() hardlim doesnt have derivative, " \
-                                   "so can not be used for example with backpropagation"
+        raise NotImplementedError("HardLim.get_phi_derivative() hardlim doesnt have derivative, " \
+                                  "so can not be used for example with backpropagation")

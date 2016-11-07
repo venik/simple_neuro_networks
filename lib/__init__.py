@@ -6,4 +6,4 @@ __maintainer__ = "Sasha Nikiforov"
 __email__ = "nikiforov.al[a]gmail.com"
 __status__ = "Development"
 
-from transferfunction import *
+__all__ = ["transferfunction"]

@@ -8,7 +8,7 @@ __author__ = 'Sasha Nikiforov nikiforov.al[at]gmail.com'
 import sys
 sys.path.append('../../')
 from lib.mnist.mnist import *
-from lib import HardLim
+from lib.transferfunction import HardLim
 from lib.neuron import NeuronLayer
 
 # import data set
@@ -35,7 +35,7 @@ for k in range(0, 59999):
 print("Layer: " + str(layer))
 
 # save weights and biases
-fd_neuro = open("weights", "w")
+fd_neuro = open("weights", "wb")
 
 np.savez(fd_neuro, layer.get_weights(), layer.get_biases())
 

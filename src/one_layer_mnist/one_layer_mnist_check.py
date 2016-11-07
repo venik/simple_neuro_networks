@@ -8,13 +8,13 @@ __author__ = 'Sasha Nikiforov nikiforov.al[at]gmail.com'
 import sys
 sys.path.append('../../')
 from lib.mnist.mnist import *
-from lib import HardLim
+from lib.transferfunction import HardLim
 from lib.neuron import NeuronLayer
 
 # import data set
 data_set = mnist('../../data_set/mnist', isTrainMode = False)
 
-fd_neuro = open("weights", "r")
+fd_neuro = open("weights", "rb")
 npzfile = np.load(fd_neuro)
 weights = npzfile['arr_0']
 biases = npzfile['arr_1']
