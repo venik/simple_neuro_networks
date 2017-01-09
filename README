@@ -13,6 +13,13 @@ http://hagan.okstate.edu/NNDesign.pdf
 
 Prepare environemnt
 1) Install python virtualenv
-2) init virtual env
+2) Init and activate virtual env
+  # virtualenv ./.neuro
+  # source ./.neuro/bin/activate
 3) Install python libraries
   # pip install -r .requirements
+
+
+Update environment
+1) store python libraries list
+  # pip freeze -r .requirements
