@@ -1,0 +1,11 @@
+SVD picture compression example on Python3
+
+Great online example
+http://timbaumann.info/svd-image-compression-demo/
+
+Some good docs (thx Berkeley). This book is abandoned now, but it's good to read and store link for future reference.
+http://inst.eecs.berkeley.edu/~ee127a/book/login/l_svd_low_rank.html
+http://inst.eecs.berkeley.edu/~ee127a/book/login/l_svd_apps_image.html
+
+Just nice presentation about PCA and SVD
+http://math.arizona.edu/~brio/VIGRE/ThursdayTalk.pdf
