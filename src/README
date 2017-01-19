@@ -1,8 +1,11 @@
-Results of implemented algorithms
+Results of implemented algorithms against K-Means
 
 ---------------------------------------------------------------
      Algorithm       |  Success (%s) |      Folder
 ---------------------------------------------------------------
 One Layer Perceptron |      69.72    |   one_layer_mnist
 ---------------------------------------------------------------
-
+K-Means 10 classes   |               |
+with predifined      |      58.42    |    k-means 
+centroids            |               |
+---------------------------------------------------------------
