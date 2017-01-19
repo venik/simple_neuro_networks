@@ -25,28 +25,29 @@ for frame in range(1, frame_num):
     (_, data) = data_set.get_next_frame()
     input[:, frame] = data
 
-# input = np.array((1, 2, 3, 4)).reshape(2, 2)
-# print("input: " + str(input))
+#input = np.array((1, 2, 3, 4, 5, 6, 7, 8, 9)).reshape(3, 3)
+#row_size = 3
+#print("input: \n" + str(input))
 
 # print("input:" + str(input.shape))
+
+# Whitening
+# http://deeplearning.stanford.edu/wiki/index.php/Implementing_PCA/Whitening
 mean = input.mean(axis = 1)
 input = input - mean.reshape(row_size, 1)
 input = input.transpose() / np.sqrt(input.shape[1] - 1)
+
+
 U, s, V = np.linalg.svd(input, full_matrices = False)
 
-# print("mean: " + str(mean))
-# print("input: " + str(input))
+#print("mean: " + str(mean))
+#print("input: \n" + str(input))
 # print("U: " + str(U))
 # print("singular: " + str(s))
 
-# s_normilized = s / np.sum(s)
-s_normilized = s
-#
-# print("singular values: " + str(s_normilized))
-#
-# # range of interest
+# range of interest
 short_range = 250
-plt.plot(np.arange(1, short_range), s_normilized[1:short_range])
+plt.plot(np.arange(1, short_range), s[1:short_range])
 plt.grid()
 plt.show()
 
