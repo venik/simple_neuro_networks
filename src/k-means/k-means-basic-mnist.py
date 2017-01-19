@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-# 1 layer perceptron neuro network against MNIST
+# K-Means clustering against MNIST
 # GPLv2 License
 
 __author__ = 'Sasha Nikiforov nikiforov.al[at]gmail.com'
@@ -50,7 +50,7 @@ centroids = get_centroids_around_digits(data_set)
 (_, est_centroids) = kmeans.recalculate_centroids(iterations=20, centroids=centroids)
 
 # save weights and biases
-fd_neuro = open("est_centroids", "w")
+fd_neuro = open("est_centroids", "wb")
 np.savez(fd_neuro, est_centroids=est_centroids, centroids=centroids)
 
 # tear down

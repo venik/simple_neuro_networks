@@ -1,4 +1,4 @@
-from sys import maxint, getsizeof
+import sys
 from numpy import linalg as la
 import numpy as np
 from array import array
@@ -27,6 +27,12 @@ class KMeansBasic(object):
         print("KMeansBasic() data set has loaded")
         return
 
+    # Returns numpy matrix
+    # every row contains centroid coordinates
+    # | centroid 1 |
+    # | centroid 2 |
+    # | .......... |
+    # | centroid N |
     def recalculate_centroids(self, iterations, centroids):
         (rows, cols) = centroids.shape
 
@@ -37,7 +43,7 @@ class KMeansBasic(object):
                 # print("data: " + str(data))
                 # calculate distance to a closest centroid
                 closest_cluster = 0
-                min_distance = maxint
+                min_distance = sys.maxsize
                 for cluster in range(0, rows):
                     # print("centroid: " + str(centroids[cluster, :]))
                     res = la.norm(data - centroids[cluster, :])
