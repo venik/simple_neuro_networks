@@ -1,4 +1,4 @@
-#!/bin/env python
+#!/usr/bin/env python
 
 import keras
 from keras.models import Sequential
@@ -27,6 +27,7 @@ for i in range(0, train_sample_num):
     train_data[i, :] = data
     train_labels[i] = label
 
+train_data.astype('float32')
 train_data /= 255
 
 data_set = mnist('../../data_set/mnist', isTrainMode=False)
@@ -39,14 +40,23 @@ for i in range(0, test_sample_num):
     test_data[i, :] = data
     test_labels[i] = label
 
+test_data.astype('float32')
 test_data /= 255
 
 ###############
 b_size = 32
 train_cat_labels = keras.utils.to_categorical(train_labels, 10)
-model.fit(train_data, train_cat_labels, epochs=1, batch_size=b_size)
+model.fit(train_data, train_cat_labels, epochs=5, batch_size=b_size)
 
 test_cat_labels = keras.utils.to_categorical(test_labels, 10)
 score = model.evaluate(test_data, test_cat_labels, batch_size=b_size)
 
 print('\n\nres: {:.2f} {:.2f}'.format(score[0], score[1]))
+
+sample_id = 120
+x = test_data[sample_id, :]
+x = np.expand_dims(x, axis=0)
+res = model.predict(x, batch_size=1, verbose=1)
+label_prob = np.max(res)
+label_id = np.where(res == label_prob)
+print('label: ' + str(test_labels[sample_id]) + ' predicted: ' + str(label_id[1]) + ' with prob: {:.2f}'.format(label_prob))
