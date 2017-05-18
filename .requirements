@@ -1,4 +1,5 @@
 cycler==0.10.0
+Keras==2.0.4
 matplotlib==1.5.3
 numpy==1.11.1
 olefile==0.44
@@ -6,6 +7,7 @@ Pillow==4.0.0
 pyparsing==2.1.9
 python-dateutil==2.5.3
 pytz==2016.6.1
+PyYAML==3.12
 scipy==0.18.1
 six==1.10.0
-wheel==0.24.0
+Theano==0.9.0
