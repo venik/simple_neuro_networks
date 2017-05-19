@@ -1,10 +1,10 @@
 #!/usr/bin/env bash
 
 PKG_INSTALL='apt install '
-PKG_LIST='gcc python3-dev git'
+PKG_LIST='gcc python3-dev virtualenv git'
 
 # install packages
-sudo $PKG_INSTALL
+sudo $PKG_INSTALL $PKG_LIST
 
 # init virtualenv
 PYTHON=python3
@@ -19,4 +19,5 @@ fi
 virtualenv $VENV_FOLDER --python=$PYTHON
 
 source $VENV_FOLDER/bin/activate
-pip install -r ./.requirements_cloud
+pip install --upgrade -r ./.requirements_cloud
+pip install --upgrade https://storage.googleapis.com/tensorflow/linux/cpu/tensorflow-1.1.0-cp34-cp34m-linux_x86_64.whl
