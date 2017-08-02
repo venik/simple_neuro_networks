@@ -1,15 +1,21 @@
 ## The following requirements were added by pip freeze:
+astroid==1.5.3
 backports.weakref==1.0rc1
 bleach==1.5.0
 cycler==0.10.0
 Keras==2.0.4
 html5lib==0.9999999
+isort==4.2.15
+lazy-object-proxy==1.3.1
 Markdown==2.6.8
 matplotlib==1.5.3
+mccabe==0.6.1
 numpy==1.11.1
 olefile==0.44
+pandas==0.20.3
 Pillow==4.0.0
 protobuf==3.3.0
+pylint==1.7.2
 pyparsing==2.1.9
 python-dateutil==2.5.3
 pytz==2016.6.1
@@ -19,3 +25,4 @@ six==1.10.0
 Theano==0.9.0
 tensorflow==1.2.1
 Werkzeug==0.12.2
+wrapt==1.10.10
