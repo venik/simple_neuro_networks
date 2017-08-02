@@ -7,3 +7,4 @@ b = tf.constant(7)
 
 sess = tf.Session()
 print(sess.run(a * b))
+
