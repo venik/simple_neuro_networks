@@ -6,7 +6,7 @@ import tensorflow as tf
 
 # example from ISLR chapter 4, classification
 
-FEATURES = ['Lag1', 'Lag2', 'Lag3', 'Lag4', 'Lag5', 'Volume']
+FEATURES = ['Lag1', 'Lag2']#, 'Lag3', 'Lag4', 'Lag5']
 LABEL = 'label'
 
 def input_data(data):
@@ -53,7 +53,8 @@ lag5 = tf.contrib.layers.real_valued_column(column_name = 'Lag5')
 volume = tf.contrib.layers.real_valued_column(column_name = 'Volume')
 today = tf.contrib.layers.real_valued_column(column_name = 'Today')
 
-feature_columns = [lag1, lag2, lag3, lag4, lag5, volume]
+feature_columns = [lag1, lag2]#, lag3, lag4, lag5]
+
 model_dir = tempfile.mkdtemp()
 m = tf.contrib.learn.LinearClassifier(
     model_dir = model_dir,
