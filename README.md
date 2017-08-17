@@ -3,7 +3,7 @@
 src/one_layer_mnist/ - implementation of the 1 layer perceptron. it was trained against MNIST data set with 60k samples, checked against 10k samples with ~70% success
 
 ## Books that I've read and can recommend (also free to download or/and read)
-[DL-Bengio] Ian Goodfellow, Yoshua Bengio, Aaron Courville (Deep Learning)[http://www.deeplearningbook.org/] - pretty much state of art book, as well as very detailed references.
+[DL-Bengio] Ian Goodfellow, Yoshua Bengio, Aaron Courville [Deep Learning](http://www.deeplearningbook.org/) - pretty much state of art book, as well as very detailed references.
 
 [Haykin-NNLM] S.Haykin Neural Networks and Learning Machines (3rd Edition) - quite classical from a famous author, has a lot of references. I think NND is better to start with neural networks
 
