@@ -7,7 +7,7 @@ rng = np.random
 
 # constants
 LEARNING_RATE = 0.01
-EPOCHS = 1
+EPOCHS = 100
 batch_size = 100
 display_step = 1
 
@@ -16,50 +16,59 @@ data_all = pd.read_csv('../../data_set/islr_datasets/Smarket.csv', header = 0)
 data_train = data_all[data_all['Year'] < 2005]
 data_test = data_all[data_all['Year'] == 2005]
 
-# data = data_train.loc[:, ('Lag1')]
-# val = data_train.loc[:, ('Direction')].apply(lambda x: 'Up' in x).astype(int)
+train_X = np.asarray(data_train.loc[:, ('Lag1')])
+train_Y = np.asarray(data_train.loc[:, ('Direction')].apply(lambda x: 'Up' in x).astype(int))
 
-X = tf.placeholder(tf.float32)
-Y = tf.placeholder(tf.float32)
+X = tf.placeholder(tf.float32, [batch_size, 1],name='X_placeholder')
+Y = tf.placeholder(tf.int32, [batch_size, 1], name='Y_placeholder')
 
-W = tf.Variable(0.0, 'weights')
-b = tf.Variable(0.0, 'bias')
+W = tf.Variable(tf.random_normal(shape=[1, 1], stddev=0.01), 'weights')
+b = tf.Variable(tf.zeros([1, 1]), 'bias')
 
 # model
-pred = tf.add(tf.multiply(X, W), b)
+pred = tf.matmul(X, W) + b
 
-# MSE cost function
-cost = tf.reduce_sum(tf.pow(Y - pred, 2)) / data_train['Lag1'].shape[0]
-# cost = tf.square(Y - pred, name="loss")
+entropy = tf.nn.softmax_cross_entropy_with_logits(logits=pred, labels=Y, name='loss')
+loss = tf.reduce_mean(entropy)
 
 # gradient descent
-optimizer = tf.train.GradientDescentOptimizer(LEARNING_RATE).minimize(cost)
+# optimizer = tf.train.GradientDescentOptimizer(LEARNING_RATE).minimize(loss)
+optimizer = tf.train.AdamOptimizer(LEARNING_RATE).minimize(loss)
 
+batches = int(train_X.shape[0] / batch_size)
 with tf.Session() as sess:
     sess.run(tf.global_variables_initializer())
 
-    train_X = np.asarray(data_train.loc[:, ('Lag1')])
-    train_Y = np.asarray(data_train.loc[:, ('Direction')].apply(lambda x: 'Up' in x).astype(int))
-    for i in range(100):  # run 100 epochs
-        for x, y in zip(train_X, train_Y):
-            sess.run(optimizer, feed_dict={X: x, Y: y})
+    for i in range(EPOCHS):
+        total_loss = 0
 
-    ###############
-    w_value, b_value = sess.run([W, b])
-    print('w: ' + str(w_value) + ' b: ' + str(b_value))
+        for kk in range(batches):
+            X_batch = train_X[kk*batch_size : (kk+1)*batch_size].reshape(batch_size, 1)
+            Y_batch = train_Y[kk*batch_size : (kk+1)*batch_size].reshape(batch_size, 1)
 
-    training_cost = sess.run(cost, feed_dict={X: train_X, Y: train_Y})
-    print("Training cost=", training_cost, "W=", sess.run(W), "b=", sess.run(b), '\n')
+            _, loss_batch = sess.run([optimizer, loss], feed_dict={X: X_batch, Y: Y_batch})
+            total_loss += loss_batch
+
+        print('Average loss epoch {0}: {1}'.format(i, total_loss / batches))
+
+    print('Optimization Finished!')
 
     #################
-    # Testing example, as requested (Issue #2)
-    test_Cost = tf.reduce_sum(tf.pow(Y - pred, 2)) / data_test['Lag1'].shape[0]
+    # Testing example
+    preds = tf.nn.softmax(pred)
+    correct_preds = tf.equal(tf.argmax(preds, 1), tf.argmax(Y, 1))
+    accuracy = tf.reduce_sum(tf.cast(correct_preds, tf.float32))
+    total_correct_preds = 0
 
     test_X = np.asarray(data_test.loc[:, ('Lag1')])
     test_Y = np.asarray(data_test.loc[:, ('Direction')].apply(lambda x: 'Up' in x).astype(int))
+    test_batches = int(test_X.shape[0] / batch_size)
 
-    print("Testing... (Mean square loss Comparison)")
-    testing_cost = sess.run(cost, feed_dict={X: test_X, Y: test_Y})  # same function as cost above
-    print("Testing cost=", testing_cost)
-    print("Absolute mean square loss difference:", abs(
-        training_cost - testing_cost))
+    for kk in range(test_batches):
+        X_test = test_X[kk * batch_size : (kk + 1) * batch_size].reshape(batch_size, 1)
+        Y_test = test_Y[kk * batch_size : (kk + 1) * batch_size].reshape(batch_size, 1)
+
+        accuracy_batch = sess.run([accuracy], feed_dict={X: X_test, Y: Y_test})
+        total_correct_preds += accuracy_batch[0]
+
+    print('Accuracy {0}'.format(total_correct_preds / test_X.shape[0]))
