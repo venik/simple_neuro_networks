@@ -3,7 +3,9 @@
 import numpy as np
 import tensorflow as tf
 import pandas as pd
-rng = np.random
+
+# good example
+# https://github.com/chiphuyen/stanford-tensorflow-tutorials/blob/master/examples/03_logistic_regression_mnist_sol.py
 
 # constants
 LEARNING_RATE = 0.01
